@@ -1,14 +1,15 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { Main } from '../components/Main';
 import { Nav } from '../components/Nav';
-import { RateThisThingCard } from '../components/RateThisThingCard';
+import { SuccessCard } from '../components/SuccessCard';
 
-const Home: NextPage = () => {
+const Done: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>Tell us what you think of this photo | Rate This Thing</title>
+        <title>Thank you! | Rate This Thing</title>
         <meta name="description" content="Vouch integration demo: Rate This Thing" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -16,10 +17,10 @@ const Home: NextPage = () => {
       <Nav />
 
       <Main>
-        <RateThisThingCard />
+        <SuccessCard />
       </Main>
     </div>
   );
 };
 
-export default Home;
+export default Done;
