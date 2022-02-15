@@ -1,6 +1,7 @@
-const VOUCH_APP_URL = 'https://staging.vouchfor.com/';
-const VOUCH_CAMPAIGN_ID = 'ij4gfiq01U';
-const CALLBACK_URL = 'http://localhost:3000/done';
+const VOUCH_APP_URL = process.env.VOUCH_APP_URL || 'https://staging.vouchfor.com/';
+const VOUCH_CAMPAIGN_ID = process.env.VOUCH_CAMPAIGN_ID || 'ij4gfiq01U';
+const CALLBACK_URL = process.env.CALLBACK_URL || 'http://localhost:3000/done';
+
 const BASE_VOUCH_CAMPAIGN_URL = `${VOUCH_APP_URL}public/c/${VOUCH_CAMPAIGN_ID}`;
 
 type Options = {
