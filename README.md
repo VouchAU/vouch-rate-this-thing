@@ -1,34 +1,89 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Example using Vouch integration
 
-## Getting Started
+This is a full-stack TypeScript example using:
 
-First, run the development server:
+- **Frontend**
+  - Next.js
+- **Backend**
+  - Next.js API routes
 
-```bash
+## Demo
+
+- Live Demo: https://vouch-rate-this-thing.herokuapp.com/
+- Documentation: https://help.vouchfor.com/en/articles/5469145-can-i-create-a-unique-campaign-link-for-each-responder
+
+## Included Functionality
+
+- **Redirect to a Vouch Campaign**
+
+  - [RateThisThingCard.tsx](components/RateThisThingCard.tsx) (via the [index page](/pages/index.tsx)) shows how a form can be redirected to a Vouch Campaign recorder link
+  - A random `cuid` session ID is also generated
+  - The Vouch redirect includes a `callback` param to the [done page](pages/done.tsx)
+  - The returning redirect from Vouch includes the Vouch ID (`vouchId`) param, the original session ID (`id`) in the URL params
+
+- **Listen to Vouch event webhook**
+
+  - [/pages/api/webhook](/pages/api/webhook.ts) API route shows a stubbed event handler for Vouch webhook events
+  - The handler focuses on two key events: `vouch.created` and `vouch.responded`
+  - `vouch.created` will be transmitted immediately after the Vouch is submitted, but before it has been processed. As such it does not include a working _watch_ link
+  - `vouch.responded` will be transmitted once the video is fully processed. It includes a working _watch_ link, and also lets you know that the REST API can now be used to retrieve all of the Vouch data such as the transcript
+
+## How to use
+
+Clone the repo to your machine and navigate into the root directory
+
+### Required configuration
+
+Copy the .env.local.example file into a file named .env.local in the root directory of this project:
+
+```sh
+cp .env.local.example .env.local
+```
+
+### Start the server
+
+Install the dependencies and start the development server:
+
+```sh
+npm install
 npm run dev
-# or
+```
+
+> OR
+
+```sh
+yarn
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Forward webhooks to your local server
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+If you want to test the webhook events, you'll need to install `ngrok` to forward a real HTTPS address to your dev server:
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```sh
+# After installing ngrok
+ngrok http 3000
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Take note of the `Forwarding https://...` address
 
-## Learn More
+```sh
+# ngrok by @inconshreveable                                                                (Ctrl+C to quit)
 
-To learn more about Next.js, take a look at the following resources:
+# Session Status                online
+# Session Expires               1 hour, 59 minutes
+# Version                       2.3.40
+# Region                        United States (us)
+# Web Interface                 http://127.0.0.1:4040
+# Forwarding                    http://... -> http://localhost:3000
+Forwarding                    https://... -> http://localhost:3000
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Connections                   ttl     opn     rt1     rt5     p50     p90
+#                               0       0       0.00    0.00    0.00    0.00
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+And then add the `https://...` address to the `Webhook URL` in your Vouch Developer dashboard:
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1. Go to https://app.vouchfor.com/dashboard/developer
+2. Copy and paste the `https://...` address that your `ngrok` output into the `Webhook URL`
+3. Hit **Save**
