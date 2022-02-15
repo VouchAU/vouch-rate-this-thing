@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { FormEvent, InputHTMLAttributes } from 'react';
-import getRedirectUrl from '../utils/get-redirect-url';
+import { getRedirectUrl } from '../utils/get-redirect-url';
 
 const Input = ({ id, label, ...rest }: InputHTMLAttributes<HTMLInputElement> & { label: string }) => (
   <div className="text-left">
@@ -46,7 +46,7 @@ const RateThisThingCard = () => {
     <div className="bg-white  w-full lg:mx-8 lg:flex lg:max-w-5xl lg:shadow-lg lg:rounded-lg">
       <div className="lg:w-1/2">
         <div
-          className="h-96 bg-cover lg:rounded-lg lg:h-full"
+          className="h-96 bg-cover lg:rounded-lg lg:h-full bg-gray-200"
           style={{ backgroundImage: `url('https://picsum.photos/480')` }}
         ></div>
       </div>

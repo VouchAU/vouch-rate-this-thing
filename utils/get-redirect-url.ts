@@ -1,7 +1,7 @@
 const VOUCH_APP_URL = 'https://staging.vouchfor.com/';
 const VOUCH_CAMPAIGN_ID = 'ij4gfiq01U';
 const CALLBACK_URL = 'http://localhost:3000/done';
-const BASE_VOUCH_URL = `${VOUCH_APP_URL}public/c/${VOUCH_CAMPAIGN_ID}`;
+const BASE_VOUCH_CAMPAIGN_URL = `${VOUCH_APP_URL}public/c/${VOUCH_CAMPAIGN_ID}`;
 
 type Options = {
   name?: string;
@@ -11,7 +11,7 @@ type Options = {
 };
 
 const getRedirectUrl = (id: string, options: Options): string => {
-  const baseUrl = `${BASE_VOUCH_URL}?callback=${encodeURIComponent(CALLBACK_URL)}&id=${id}`;
+  const baseUrl = `${BASE_VOUCH_CAMPAIGN_URL}?callback=${encodeURIComponent(CALLBACK_URL)}&id=${id}`;
 
   const url = new URL(baseUrl);
 
@@ -23,4 +23,6 @@ const getRedirectUrl = (id: string, options: Options): string => {
   return url.toString();
 };
 
-export default getRedirectUrl;
+const getWatchUrl = (vouchId: string): string => `${VOUCH_APP_URL}public/w/${vouchId}`;
+
+export { getRedirectUrl, getWatchUrl };

@@ -1,9 +1,12 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { getWatchUrl } from '../utils/get-redirect-url';
 
 const SuccessCard = () => {
   const router = useRouter();
   const { id, vouchId } = router.query as Record<string, string>;
+
+  const watchLink = getWatchUrl(vouchId);
 
   return (
     <div className="bg-white w-full text-center lg:mx-8 lg:flex lg:max-w-3xl lg:shadow-lg lg:rounded-lg max-h-96">
@@ -20,6 +23,13 @@ const SuccessCard = () => {
         <p className="mt-4">
           We received this ID attached to your submission:{' '}
           <code className="bg-gray-100 px-2 py-2 mx-1 rounded-lg">{id}</code>
+        </p>
+
+        <p className="mt-4">
+          Your response will be live soon at: <br />
+          <a href={watchLink} target="_blank" rel="noreferrer" className="text-blue-500 font-mono">
+            {watchLink}
+          </a>
         </p>
 
         <div className="mt-8">
