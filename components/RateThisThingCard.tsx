@@ -1,5 +1,6 @@
+import cuid from 'cuid';
 import { useRouter } from 'next/router';
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { getRedirectUrl } from '../utils/get-redirect-url';
 import { Input } from './common/Input';
 
@@ -17,12 +18,13 @@ interface RateThisThingFormElement extends HTMLFormElement {
 
 const RateThisThingCard = () => {
   const router = useRouter();
+  const [sessionId] = useState(cuid());
 
   function handleSubmit(event: FormEvent<RateThisThingFormElement>) {
     event.preventDefault();
     const { nameInput, emailInput, companyInput, companyUrlInput } = event.currentTarget.elements;
 
-    const redirectUrl = getRedirectUrl(emailInput.value, {
+    const redirectUrl = getRedirectUrl(sessionId, {
       name: nameInput.value,
       email: emailInput.value,
       company: companyInput.value,
