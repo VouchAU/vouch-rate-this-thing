@@ -1,6 +1,6 @@
-const VOUCH_APP_URL = process.env.NEXT_PUBLIC_VOUCH_APP_URL || 'https://dev.vouchfor.com/';
-const VOUCH_CAMPAIGN_ID = process.env.NEXT_PUBLIC_VOUCH_CAMPAIGN_ID || 'r4LKBfED6I';
-const CALLBACK_URL = process.env.NEXT_PUBLIC_CALLBACK_URL || 'https://vouch-rate-this-thing.herokuapp.com/done';
+const VOUCH_APP_URL = process.env.NEXT_PUBLIC_VOUCH_APP_URL || '';
+const VOUCH_CAMPAIGN_ID = process.env.NEXT_PUBLIC_VOUCH_CAMPAIGN_ID || '';
+const CALLBACK_URL = process.env.NEXT_PUBLIC_CALLBACK_URL || '';
 
 const BASE_VOUCH_CAMPAIGN_URL = `${VOUCH_APP_URL}public/c/${VOUCH_CAMPAIGN_ID}`;
 
