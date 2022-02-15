@@ -1,27 +1,16 @@
 import { useRouter } from 'next/router';
-import React, { FormEvent, InputHTMLAttributes } from 'react';
+import React, { FormEvent } from 'react';
 import { getRedirectUrl } from '../utils/get-redirect-url';
+import { Input } from './common/Input';
 
-const Input = ({ id, label, ...rest }: InputHTMLAttributes<HTMLInputElement> & { label: string }) => (
-  <div className="text-left">
-    <label className="text-gray-700 dark:text-gray-200" htmlFor={id}>
-      {label}
-      {rest.required ? <span className="text-red-500 ml-2">*</span> : null}
-    </label>
-    <input
-      id={id}
-      className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
-      {...rest}
-    />
-  </div>
-);
-
+// thanks https://epicreact.dev/how-to-type-a-react-form-on-submit-handler/
 interface FormElements extends HTMLFormControlsCollection {
   nameInput: HTMLInputElement;
   emailInput: HTMLInputElement;
   companyInput: HTMLInputElement;
   companyUrlInput: HTMLInputElement;
 }
+
 interface RateThisThingFormElement extends HTMLFormElement {
   readonly elements: FormElements;
 }
@@ -32,13 +21,14 @@ const RateThisThingCard = () => {
   function handleSubmit(event: FormEvent<RateThisThingFormElement>) {
     event.preventDefault();
     const { nameInput, emailInput, companyInput, companyUrlInput } = event.currentTarget.elements;
-    const id = emailInput.value;
-    const redirectUrl = getRedirectUrl(id, {
+
+    const redirectUrl = getRedirectUrl(emailInput.value, {
       name: nameInput.value,
       email: emailInput.value,
       company: companyInput.value,
       url: companyUrlInput.value,
     });
+
     router.push(redirectUrl);
   }
 
@@ -60,10 +50,10 @@ const RateThisThingCard = () => {
           <p className="mt-4 text-gray-800 ">Follow the link below to leave us a video response.</p>
 
           <form onSubmit={handleSubmit} className="mt-12 sm:-mx-2 space-y-3">
-            <Input autoFocus label="Your name" id="nameInput" type="text" required />
-            <Input label="Your email address" id="emailInput" type="text" required />
-            <Input label="Your company" placeholder="Optional" id="companyInput" type="text" />
-            <Input label="Your company URL" placeholder="Optional" id="companyUrlInput" type="text" />
+            <Input id="nameInput" label="Your name" type="text" required autoFocus />
+            <Input id="emailInput" label="Your email address" type="text" required />
+            <Input id="companyInput" label="Your company" placeholder="Optional" type="text" />
+            <Input id="companyUrlInput" label="Your company URL" placeholder="Optional" type="text" />
 
             <div className="pt-8 inline-flex w-full sm:w-auto">
               <button
