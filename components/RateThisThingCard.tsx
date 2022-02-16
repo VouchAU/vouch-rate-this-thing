@@ -52,8 +52,8 @@ const RateThisThingCard = () => {
           <p className="mt-4 text-gray-800 ">Follow the link below to leave us a video response.</p>
 
           <form onSubmit={handleSubmit} className="mt-12 sm:-mx-2 space-y-3">
-            <Input id="nameInput" label="Your name" type="text" required autoFocus />
-            <Input id="emailInput" label="Your email address" type="text" required />
+            <Input id="nameInput" label="Your name" type="text" autoFocus />
+            <Input id="emailInput" label="Your email address" type="text" />
             <Input id="companyInput" label="Your company" placeholder="Optional" type="text" />
             <Input id="companyUrlInput" label="Your company URL" placeholder="Optional" type="text" />
 
@@ -68,7 +68,12 @@ const RateThisThingCard = () => {
 
             <div className="inline-flex w-full mt-4 sm:w-auto sm:mt-0">
               <button
-                onClick={() => window.location.reload()}
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  event.preventDefault();
+                  window.location.reload();
+                }}
                 className="inline-flex items-center justify-center w-full px-6 py-3 text-gray-700 transition-colors duration-150 transform bg-white rounded-lg dark:bg-gray-900 hover:bg-gray-100 dark:text-white sm:w-auto dark:hover:bg-gray-800 dark:ring-gray-700 focus:ring focus:ring-gray-200 focus:ring-opacity-80"
               >
                 Show me a new thing
