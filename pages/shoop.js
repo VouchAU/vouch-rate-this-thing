@@ -19,7 +19,8 @@ const Shoop = () => {
           title="Jay's fantastic campaign full of testing and debugging"
           src="https://staging.vouchfor.com/public/c/qJV8I83SIX"
           sandbox="allow-scripts allow-same-origin allow-forms"
-          allow="camera https://staging.vouchfor.com; microphone https://staging.vouchfor.com; fullscreen"
+          allow="camera https://staging.vouchfor.com; microphone https://staging.vouchfor.com; display-capture https://staging.vouchfor.com;
+           fullscreen"
           width="414"
           height="736"
         ></iframe>{' '}

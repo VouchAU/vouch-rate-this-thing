@@ -19,7 +19,8 @@ const Whoop = () => {
           title="Give em one of these"
           src="https://staging.vouchfor.com/public/c/2i96wlOp21"
           sandbox="allow-scripts allow-same-origin allow-forms"
-          allow="camera https://staging.vouchfor.com; microphone https://staging.vouchfor.com; fullscreen"
+          allow="camera https://staging.vouchfor.com; microphone https://staging.vouchfor.com; display-capture https://staging.vouchfor.com;
+           fullscreen"
           width="414"
           height="736"
         ></iframe>{' '}
