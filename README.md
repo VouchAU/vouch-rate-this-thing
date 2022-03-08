@@ -21,6 +21,12 @@ This is a full-stack TypeScript example using:
   - The Vouch redirect includes a `callback` param to the [done page](pages/done.tsx)
   - The returning redirect from Vouch includes the Vouch ID (`vouchId`) param, the original session ID (`id`) in the URL params
 
+- **Demo an iframe embedded Vouch Recorder**
+
+  - [RateThisThingCardIframe.tsx](components/RateThisThingCardIframe.tsx) (via the [iframe-example page](/pages/iframe-example.tsx)) shows a demo of a Campaign embed using the iframe option
+  - The user can complete a Vouch without leaving the original page
+  - The page includes some additional styling to show how to make a [responsive iframe](https://stackoverflow.com/a/29784327/10293336)
+
 - **Listen to Vouch event webhook**
 
   - [/pages/api/webhook](/pages/api/webhook.ts) API route shows a stubbed event handler for Vouch webhook events
