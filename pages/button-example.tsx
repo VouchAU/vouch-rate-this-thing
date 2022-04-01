@@ -2,13 +2,13 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { Main } from '../components/Main';
 import { Nav } from '../components/Nav';
-import { RateThisThingCardIframe } from '../components/RateThisThingCardIframe';
+import { RateThisThingCardButton } from '../components/RateThisThingCardButton';
 
-const IFrameExamplePage: NextPage = () => {
+const ButtonExamplePage: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>Tell us what you think of this photo - iframe | Rate This Thing</title>
+        <title>Tell us what you think of this photo - Button | Rate This Thing</title>
         <meta name="description" content="Vouch integration demo: Rate This Thing" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -16,10 +16,10 @@ const IFrameExamplePage: NextPage = () => {
       <Nav />
 
       <Main>
-        <RateThisThingCardIframe />
+        <RateThisThingCardButton />
       </Main>
     </div>
   );
 };
 
-export default IFrameExamplePage;
+export default ButtonExamplePage;

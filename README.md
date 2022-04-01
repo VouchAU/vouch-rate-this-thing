@@ -27,6 +27,11 @@ This is a full-stack TypeScript example using:
   - The user can complete a Vouch without leaving the original page
   - The page includes some additional styling to show how to make a [responsive iframe](https://stackoverflow.com/a/29784327/10293336)
 
+- **Demo an button embedded Vouch Recorder**
+
+  - [RateThisThingCardButton.tsx](components/RateThisThingCardButton.tsx) (via the [button-example page](/pages/button-example.tsx)) shows a demo of a Campaign embed using the button embeddable
+  - The user can complete a Vouch without leaving the original page
+
 - **Listen to Vouch event webhook**
 
   - [/pages/api/webhook](/pages/api/webhook.ts) API route shows a stubbed event handler for Vouch webhook events

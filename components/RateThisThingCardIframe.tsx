@@ -30,7 +30,7 @@ const RateThisThingCardIframe = () => {
                   className="absolute top-0 left-0 w-full h-full" // iframe styles for responsive content
                   id="l3sL7l6C4C"
                   title="Rate This Thing"
-                  src="https://dev.vouchfor.com/public/c/l3sL7l6C4C"
+                  src="https://dev.vouchfor.com/public/c/l3sL7l6C4C?permissions=prompt&nosupport=true"
                   sandbox="allow-scripts allow-same-origin allow-forms"
                   allow="camera https://dev.vouchfor.com; microphone https://dev.vouchfor.com; display-capture https://dev.vouchfor.com; fullscreen"
                   width="414"
