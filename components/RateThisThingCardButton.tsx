@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import React from 'react';
 
 const RateThisThingCardButton = () => {
@@ -20,15 +21,18 @@ const RateThisThingCardButton = () => {
         <p className="px-12 mt-4 text-gray-800">Click the button below to record a video response.</p>
 
         <div className="flex px-12 justify-center pt-8">
+          <Script
+            id="vouch-recorder-button-script"
+            strategy="afterInteractive"
+            type="module"
+            crossOrigin="anonymous"
+            referrerPolicy="no-referrer"
+            src="https://cdn.jsdelivr.net/npm/@vouchfor/uikit@alpha/embed/vouch-recorder-button.bundle.js"
+          ></Script>
+
           <div
             dangerouslySetInnerHTML={{
               __html: `
-<script
-	type="module"
-	crossorigin="anonymous"
-	referrerpolicy="no-referrer"
-	src="https://cdn.jsdelivr.net/npm/@vouchfor/uikit@alpha/embed/vouch-recorder-button.bundle.js">
-</script>
 <div>
 	<vouch-recorder-button
 		label="Record your answer"
