@@ -23,7 +23,6 @@ const RateThisThingCardButton = () => {
         <div className="flex px-12 justify-center pt-8">
           <Script
             id="vouch-recorder-button-script"
-            strategy="afterInteractive"
             type="module"
             crossOrigin="anonymous"
             referrerPolicy="no-referrer"
