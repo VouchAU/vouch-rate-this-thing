@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const Nav = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -10,7 +10,7 @@ const Nav = () => {
     setMenuOpen((prev) => !prev);
   }
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setMenuOpen(false);
   }, [router]);
 
