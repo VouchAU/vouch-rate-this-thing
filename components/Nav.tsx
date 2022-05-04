@@ -2,6 +2,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
+function getLinkClasses(isActive: boolean): string {
+  return `py-4 text-sm font-medium text-gray-700 transition-colors duration-200 transform dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 md:mx-4 md:my-0 ${
+    isActive ? 'text-blue-500' : ''
+  }`;
+}
+
 const Nav = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
@@ -46,33 +52,19 @@ const Nav = () => {
         <div className={`items-center md:flex ${isMenuOpen ? '' : 'hidden'} md:h-auto h-screen md:pt-0 pt-6`}>
           <div className="flex flex-col md:flex-row md:mx-6">
             <Link href="/">
-              <a
-                className={`py-4 text-sm font-medium text-gray-700 transition-colors duration-200 transform dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 md:mx-4 md:my-0 ${
-                  router.pathname === '/' ? 'text-blue-500' : ''
-                }`}
-              >
-                Redirect
-              </a>
+              <a className={getLinkClasses(router.pathname === '/')}>Redirect</a>
             </Link>
 
             <Link href="/iframe-example">
-              <a
-                className={`py-4 text-sm font-medium text-gray-700 transition-colors duration-200 transform dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 md:mx-4 md:my-0 ${
-                  router.pathname === '/iframe-example' ? 'text-blue-500' : ''
-                }`}
-              >
-                iframe
-              </a>
+              <a className={getLinkClasses(router.pathname === '/iframe-example')}>iframe</a>
             </Link>
 
             <Link href="/button-example">
-              <a
-                className={`py-4 text-sm font-medium text-gray-700 transition-colors duration-200 transform dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 md:mx-4 md:my-0 ${
-                  router.pathname === '/button-example' ? 'text-blue-500' : ''
-                }`}
-              >
-                Button
-              </a>
+              <a className={getLinkClasses(router.pathname === '/button-example')}>Button</a>
+            </Link>
+
+            <Link href="/report-example">
+              <a className={getLinkClasses(router.pathname === '/report-example')}>Report</a>
             </Link>
           </div>
         </div>
