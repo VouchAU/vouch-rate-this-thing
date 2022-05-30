@@ -1,6 +1,8 @@
 import Script from 'next/script';
 import React from 'react';
 
+const CAMPAIGN = process.env.NEXT_PUBLIC_VOUCH_DEFAULT_CAMPAIGN_ID;
+
 const RateThisThingCardReport = () => {
   return (
     <div className="w-full text-center lg:max-w-7xl lg:mx-8">
@@ -17,7 +19,7 @@ const RateThisThingCardReport = () => {
             type="module"
             crossOrigin="anonymous"
             referrerPolicy="no-referrer"
-            src="https://cdn.jsdelivr.net/npm/@vouchfor/uikit@alpha/embed/vouch-recorder-button.bundle.js"
+            src="https://cdn.jsdelivr.net/npm/@vouchfor/uikit@beta/embed/vouch-recorder-button.bundle.js"
           ></Script>
 
           <div
@@ -26,7 +28,7 @@ const RateThisThingCardReport = () => {
 <div>
 	<vouch-recorder-button
 		label="Record your answer"
-		hid="l3sL7l6C4C"
+		hid="${CAMPAIGN}"
 		type="campaign"
     userearcamera="true"
 		style="--vu-embed-dialogue-color:#000000;--vu-embed-dialogue-bg-color:#FFFFFF;--vm-slider-value-color: #FFFFFF;--vu-recorder-button-bg-color:#2563eb;--vu-recorder-button-color: #FFFFFF;--vu-recorder-button-border-color:#2563eb;--vu-recorder-button-radius:8px;"
