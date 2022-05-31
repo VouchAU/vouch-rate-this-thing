@@ -1,11 +1,11 @@
-import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
+import type { GetStaticProps, InferGetServerSidePropsType, NextPage } from 'next';
 import Head from 'next/head';
+import { BaseCampaign, listCampaigns } from '../api/vouch';
 import { Main } from '../components/Main';
 import { Nav } from '../components/Nav';
 import { RateThisThingCardWhiteLabel } from '../components/RateThisThingCardWhiteLabel';
-import { BaseCampaign, listCampaigns } from '../api/vouch';
 
-const WhitelabelExamplePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (props) => {
+const WhitelabelExamplePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (props) => {
   const { data } = props;
 
   return (
@@ -23,7 +23,7 @@ const WhitelabelExamplePage: NextPage<InferGetStaticPropsType<typeof getStaticPr
   );
 };
 
-export const getStaticProps: GetStaticProps<{ data: Array<BaseCampaign> }> = async (context) => {
+export const getServerSideProps: GetStaticProps<{ data: Array<BaseCampaign> }> = async (context) => {
   let data: Array<BaseCampaign> = [];
   try {
     data = await listCampaigns();
