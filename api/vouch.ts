@@ -42,8 +42,8 @@ interface Question {
 interface Vouch {
   id: string;
   name: string;
-  externalid: string;
   questions: Question[];
+  externalid: string;
 }
 
 export interface BaseCampaign {

@@ -2,9 +2,13 @@ import Script from 'next/script';
 
 type Props = {
   campaignId: string;
+  label?: string;
+  type?: 'campaign' | 'vouch';
+  useRearCamera?: boolean;
+  query?: string;
 };
 
-const VouchRecorderButton = ({ campaignId }: Props) => (
+const VouchRecorderButton = ({ campaignId, label, type, useRearCamera, query }: Props) => (
   <>
     <Script
       id="vouch-recorder-button-script"
@@ -19,10 +23,11 @@ const VouchRecorderButton = ({ campaignId }: Props) => (
         __html: `
 <div>
 	<vouch-recorder-button
-		label="Record your answer"
+		label="${label ?? 'Record your answer'}"
 		hid="${campaignId}"
-		type="campaign"
-    userearcamera="true"
+		type="${type ?? 'campaign'}"
+    userearcamera="${useRearCamera !== undefined ? useRearCamera : true}"
+    ${query ? `query="${query}"` : ''}
 		style="--vu-embed-dialogue-color:#000000;--vu-embed-dialogue-bg-color:#FFFFFF;--vm-slider-value-color: #FFFFFF;--vu-recorder-button-bg-color:#2563eb;--vu-recorder-button-color: #FFFFFF;--vu-recorder-button-border-color:#2563eb;--vu-recorder-button-radius:8px;"
 	/>
 </div>`,

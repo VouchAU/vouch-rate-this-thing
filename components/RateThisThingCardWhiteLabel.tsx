@@ -1,8 +1,8 @@
 import React, { FormEvent, useEffect, useState } from 'react';
 import { BaseCampaign } from '../api/vouch';
 import { Button } from './common/Button';
+import { Input } from './common/Input';
 import { Select } from './common/Select';
-import { Spinner } from './common/Spinner';
 import { VouchRecorderButton } from './common/VouchRecorderButton';
 import { WhiteLabelCreateCampaignModal } from './WhiteLabelCreateCampaignModal';
 
@@ -23,13 +23,16 @@ type Props = {
 
 const RateThisThingCardWhiteLabel = (props: Props) => {
   const [campaigns, setCampaigns] = useState<BaseCampaign[]>([]);
-  const [campaignId, setCampaignId] = useState<string | undefined>(undefined);
+  const [campaignId, setCampaignId] = useState<string | undefined>('');
+  const [externalId, setExternalId] = useState<string | undefined>('');
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [isLoading, setLoading] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState<BaseCampaign>();
 
   useEffect(() => {
     setCampaigns(props.campaigns);
+    if (props.campaigns.length) {
+      setCampaignId(props.campaigns[0].id);
+    }
   }, [props.campaigns]);
 
   function handleCloseCreateModal() {
@@ -55,19 +58,11 @@ const RateThisThingCardWhiteLabel = (props: Props) => {
     if (!campaignId) return;
     const item = campaigns.find((x) => x.id === campaignId);
     if (!item) return;
-    selectCampaign(item);
+    selectCampaign({ ...item, externalid: externalId ?? '' });
   }
 
   function handleBackClick() {
     setSelectedCampaign(undefined);
-  }
-
-  if (isLoading) {
-    return (
-      <div className="flex mx-auto mt-10 justify-center">
-        <Spinner />
-      </div>
-    );
   }
 
   return (
@@ -100,7 +95,10 @@ const RateThisThingCardWhiteLabel = (props: Props) => {
                 Back
               </Button>
 
-              <VouchRecorderButton campaignId={selectedCampaign.id ?? CAMPAIGN} />
+              <VouchRecorderButton
+                campaignId={selectedCampaign.id ?? CAMPAIGN}
+                query={selectedCampaign.externalid ? `externalid=${selectedCampaign.externalid.trim()}` : undefined}
+              />
             </div>
           </div>
         ) : (
@@ -123,6 +121,17 @@ const RateThisThingCardWhiteLabel = (props: Props) => {
                   setCampaignId(event.currentTarget.value);
                 }}
               />
+
+              <div className="mt-4">
+                <Input
+                  label="External ID (Optional)"
+                  type="text"
+                  value={externalId}
+                  onChange={(event) => {
+                    setExternalId(event.currentTarget.value);
+                  }}
+                />
+              </div>
 
               <p className="font-bold text-xl py-5">OR</p>
 
