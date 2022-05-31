@@ -1,7 +1,7 @@
 const VouchClient = require('@vouchfor/sdk');
 const vouchClient = new VouchClient({
-  env: 'staging',
-  apiKey: 'rqcxIuZ7Ct-XS8W97w7b0nkShCcQxYuGDMOzJx3h6RBzFEv0etzE8AOCHuO27'
+  env: process.env.NEXT_PUBLIC_VOUCH_ENV,
+  apiKey: process.env.NEXT_PUBLIC_VOUCH_API_KEY,
 });
 
 interface Contact {
@@ -33,11 +33,11 @@ interface Answer extends Transcription {
 
 enum QuestionType {
   SCREEN = 'SCREEN',
-  VIDEO = 'VIDEO'
+  VIDEO = 'VIDEO',
 }
 
 interface Question {
-  answer?: Answer
+  answer?: Answer;
   maxduration: number;
   optional: boolean;
   text: string;
@@ -48,7 +48,7 @@ interface Vouch {
   id: string;
   name: string;
   externalid: string;
-  questions: Question[]
+  questions: Question[];
 }
 
 export interface BaseCampaign {
@@ -75,23 +75,23 @@ interface Vouch {
 
 export const getVouch = async (id: string): Promise<Vouch> => {
   return vouchClient.vouches.get(id);
-}
+};
 
 export const getCampaign = async (id: string): Promise<BaseCampaign> => {
   return vouchClient.campaigns.get(id);
-}
+};
 
 export const createCampaign = async (payload: CreateCampaignPayload): Promise<BaseCampaign> => {
   const result = await vouchClient.campaigns.create(payload);
   return result.campaign;
-}
+};
 
 export const updateCampaign = async (id: string, payload: UpdateCampaignPayload): Promise<BaseCampaign> => {
   const result = await vouchClient.campaigns.update(id, payload);
   return result.campaign;
-}
+};
 
 export const listCampaigns = async (): Promise<BaseCampaign[]> => {
   const result = await vouchClient.campaigns.list();
   return result.campaigns || [];
-}
+};

@@ -1,10 +1,13 @@
-import type { NextPage } from 'next';
+import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Head from 'next/head';
 import { Main } from '../components/Main';
 import { Nav } from '../components/Nav';
-import { ConfigureRequestCard } from '../components/ConfigureRequestCard';
+import { RateThisThingCardWhiteLabel } from '../components/RateThisThingCardWhiteLabel';
+import { BaseCampaign, listCampaigns } from '../api/vouch';
 
-const WhitelabelExamplePage: NextPage = () => {
+const WhitelabelExamplePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (props) => {
+  const { data } = props;
+
   return (
     <div>
       <Head>
@@ -14,10 +17,25 @@ const WhitelabelExamplePage: NextPage = () => {
       </Head>
       <Nav />
       <Main>
-        <ConfigureRequestCard />
+        <RateThisThingCardWhiteLabel campaigns={data} />
       </Main>
     </div>
   );
+};
+
+export const getStaticProps: GetStaticProps<{ data: Array<BaseCampaign> }> = async (context) => {
+  let data: Array<BaseCampaign> = [];
+  try {
+    data = await listCampaigns();
+  } catch (e) {
+    console.error(e);
+  }
+
+  return {
+    props: {
+      data,
+    },
+  };
 };
 
 export default WhitelabelExamplePage;
