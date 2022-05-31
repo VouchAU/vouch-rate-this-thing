@@ -1,8 +1,9 @@
 import React, { FormEvent, useEffect, useState } from 'react';
-import { BaseCampaign } from '../api/vouch';
+import { BaseCampaign, listCampaigns } from '../api/vouch';
 import { Button } from './common/Button';
 import { Input } from './common/Input';
 import { Select } from './common/Select';
+import { Spinner } from './common/Spinner';
 import { VouchRecorderButton } from './common/VouchRecorderButton';
 import { WhiteLabelCreateCampaignModal } from './WhiteLabelCreateCampaignModal';
 
@@ -17,23 +18,28 @@ interface RateThisThingFormElement extends HTMLFormElement {
   readonly elements: FormElements;
 }
 
-type Props = {
-  campaigns: Array<BaseCampaign>;
-};
-
-const RateThisThingCardWhiteLabel = (props: Props) => {
+const RateThisThingCardWhiteLabel = () => {
   const [campaigns, setCampaigns] = useState<BaseCampaign[]>([]);
   const [campaignId, setCampaignId] = useState<string | undefined>('');
   const [externalId, setExternalId] = useState<string | undefined>('');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState<BaseCampaign>();
 
-  useEffect(() => {
-    setCampaigns(props.campaigns);
-    if (props.campaigns.length) {
-      setCampaignId(props.campaigns[0].id);
+  async function init() {
+    try {
+      const res = await listCampaigns();
+      setCampaigns(res);
+      if (res.length) {
+        setCampaignId(res[0].id);
+      }
+    } catch (e) {
+      console.error(e);
     }
-  }, [props.campaigns]);
+  }
+
+  useEffect(() => {
+    init();
+  }, []);
 
   function handleCloseCreateModal() {
     setShowCreateModal(false);
@@ -106,32 +112,40 @@ const RateThisThingCardWhiteLabel = (props: Props) => {
             <h2 className="text-3xl font-semibold tracking-tight text-gray-700 sm:text-4xl">Configure your Campaign</h2>
 
             <form onSubmit={handleSubmit} className="mt-12">
-              <Select
-                id="campaignInput"
-                options={campaigns.map((campaign) => {
-                  return {
-                    id: campaign.id,
-                    label: campaign.name,
-                    value: campaign.id,
-                  };
-                })}
-                label="Select a Vouch Campaign"
-                value={campaignId}
-                onChange={(event) => {
-                  setCampaignId(event.currentTarget.value);
-                }}
-              />
+              {!campaigns?.length ? (
+                <div className="flex justify-center items-center h-[164px]">
+                  <Spinner />
+                </div>
+              ) : (
+                <>
+                  <Select
+                    id="campaignInput"
+                    options={campaigns.map((campaign) => {
+                      return {
+                        id: campaign.id,
+                        label: campaign.name,
+                        value: campaign.id,
+                      };
+                    })}
+                    label="Select a Vouch Campaign"
+                    value={campaignId}
+                    onChange={(event) => {
+                      setCampaignId(event.currentTarget.value);
+                    }}
+                  />
 
-              <div className="mt-4">
-                <Input
-                  label="External ID (Optional)"
-                  type="text"
-                  value={externalId}
-                  onChange={(event) => {
-                    setExternalId(event.currentTarget.value);
-                  }}
-                />
-              </div>
+                  <div className="mt-4">
+                    <Input
+                      label="External ID (Optional)"
+                      type="text"
+                      value={externalId}
+                      onChange={(event) => {
+                        setExternalId(event.currentTarget.value);
+                      }}
+                    />
+                  </div>
+                </>
+              )}
 
               <p className="font-bold text-xl py-5">OR</p>
 
