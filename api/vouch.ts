@@ -72,7 +72,12 @@ interface Vouch {
   externalid: string;
 }
 
-export const getVouch = async (id: string): Promise<Vouch> => {
+export const getVouch = async (
+  id: string
+): Promise<{
+  vouch: Vouch;
+  contact: Contact;
+}> => {
   return vouchClient.vouches.get(id);
 };
 

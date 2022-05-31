@@ -1,7 +1,7 @@
 import React from 'react';
 import { VouchRecorderButton } from './common/VouchRecorderButton';
 
-const CAMPAIGN = process.env.NEXT_PUBLIC_VOUCH_DEFAULT_CAMPAIGN_ID;
+const CAMPAIGN = process.env.NEXT_PUBLIC_VOUCH_DEFAULT_CAMPAIGN_ID ?? '';
 
 const RateThisThingCardReport = () => {
   return (
