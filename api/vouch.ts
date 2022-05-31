@@ -31,17 +31,12 @@ interface Answer extends Transcription {
   video?: string;
 }
 
-enum QuestionType {
-  SCREEN = 'SCREEN',
-  VIDEO = 'VIDEO',
-}
-
 interface Question {
   answer?: Answer;
   maxduration: number;
   optional: boolean;
   text: string;
-  type: QuestionType;
+  type: 'SCREEN' | 'VIDEO';
 }
 
 interface Vouch {
@@ -58,8 +53,12 @@ export interface BaseCampaign {
 }
 
 interface CreateCampaignPayload {
-  name: string;
-  externalid?: string;
+  campaign: {
+    name: string;
+    questions: Question[];
+    externalid?: string;
+    note?: string;
+  };
 }
 
 interface UpdateCampaignPayload {

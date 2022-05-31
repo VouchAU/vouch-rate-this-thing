@@ -1,5 +1,6 @@
 import cuid from 'cuid';
-import { useState } from 'react';
+import { FormEventHandler, useEffect, useState } from 'react';
+import { createCampaign } from '../api/vouch';
 import { Button } from './common/Button';
 import { Input } from './common/Input';
 import { Modal } from './common/Modal';
@@ -8,6 +9,7 @@ import { Select } from './common/Select';
 type Props = {
   open: boolean;
   onClose: () => void;
+  addCampaign: (id: string, name: string, externalId: string) => void;
 };
 
 type Question = {
@@ -15,14 +17,25 @@ type Question = {
   maxduration: number;
   optional: boolean;
   text: string;
-  type: 'screen' | 'video';
+  type: 'SCREEN' | 'VIDEO';
 };
 
 const WhiteLabelCreateCampaignModal = (props: Props) => {
-  const { open, onClose } = props;
+  const { open, onClose, addCampaign } = props;
 
   const [campaignName, setCampaignName] = useState('');
+  const [externalId, setExternalId] = useState('');
   const [questions, setQuestions] = useState<Question[]>([]);
+
+  useEffect(() => {
+    addQuestion();
+  }, []);
+
+  function resetForm() {
+    setCampaignName('');
+    setExternalId('');
+    setQuestions([]);
+  }
 
   function updateQuestion(id: string, question: Question) {
     setQuestions((prev) =>
@@ -43,7 +56,7 @@ const WhiteLabelCreateCampaignModal = (props: Props) => {
         maxduration: 60,
         optional: false,
         text: '',
-        type: 'video',
+        type: 'VIDEO',
       },
     ]);
   }
@@ -52,13 +65,24 @@ const WhiteLabelCreateCampaignModal = (props: Props) => {
     setQuestions((prev) => prev.filter((question) => question.id !== id));
   }
 
-  function handleSubmit() {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault();
     const data = {
-      campaignName,
-      questions,
+      campaign: {
+        name: campaignName,
+        externalid: !externalId ? undefined : externalId,
+        questions: questions.map((x) => ({ ...x, id: undefined })),
+        // note: message,
+        // settings: {},
+      },
     };
-    window.alert(JSON.stringify(data));
-  }
+
+    const res = await createCampaign(data);
+    const { id, name } = res; // doesn't return explicit externalid
+    addCampaign(id, name, externalId);
+    onClose();
+    resetForm();
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -76,11 +100,20 @@ const WhiteLabelCreateCampaignModal = (props: Props) => {
           <Input
             autoFocus
             required
-            id="nameInput"
             label="Campaign Name"
             type="text"
+            value={campaignName}
             onChange={(event) => {
               setCampaignName(event.currentTarget.value);
+            }}
+          />
+
+          <Input
+            label="External ID (Optional)"
+            type="text"
+            value={externalId}
+            onChange={(event) => {
+              setExternalId(event.currentTarget.value);
             }}
           />
 
@@ -89,7 +122,7 @@ const WhiteLabelCreateCampaignModal = (props: Props) => {
               <div className="flex justify-between" key={question.id}>
                 <div className="flex gap-x-2">
                   <Input
-                    autoFocus
+                    autoFocus={questions.length > 1}
                     required
                     id={`question-${question.id}-text`}
                     label={`Question ${idx + 1}`}
@@ -121,8 +154,8 @@ const WhiteLabelCreateCampaignModal = (props: Props) => {
                     id={`question-${question.id}-type`}
                     label="Type"
                     options={[
-                      'video',
-                      // 'screen'
+                      'VIDEO',
+                      // 'SCREEN'
                     ].map((x) => {
                       return {
                         id: x,
@@ -131,7 +164,7 @@ const WhiteLabelCreateCampaignModal = (props: Props) => {
                       };
                     })}
                     onBlur={(event) => {
-                      if (event.currentTarget.value !== 'screen' && event.currentTarget.value !== 'video') {
+                      if (event.currentTarget.value !== 'SCREEN' && event.currentTarget.value !== 'VIDEO') {
                         return;
                       }
                       updateQuestion(question.id, {

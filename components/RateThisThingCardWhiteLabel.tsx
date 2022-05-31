@@ -1,5 +1,6 @@
 import React, { FormEvent, useEffect, useState } from 'react';
 import { BaseCampaign } from '../api/vouch';
+import { Button } from './common/Button';
 import { Select } from './common/Select';
 import { Spinner } from './common/Spinner';
 import { VouchRecorderButton } from './common/VouchRecorderButton';
@@ -25,6 +26,7 @@ const RateThisThingCardWhiteLabel = (props: Props) => {
   const [campaignId, setCampaignId] = useState<string | undefined>(undefined);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [selectedCampaign, setSelectedCampaign] = useState<BaseCampaign>();
 
   useEffect(() => {
     setCampaigns(props.campaigns);
@@ -34,16 +36,30 @@ const RateThisThingCardWhiteLabel = (props: Props) => {
     setShowCreateModal(false);
   }
 
-  function handleChange(event: FormEvent<RateThisThingFormElement>) {
-    event.preventDefault();
-    const { campaignInput } = event.currentTarget.elements;
-    if (campaignInput) {
-      setCampaignId(campaignInput.value);
-    }
-  }
-
   function handleSubmit(event: FormEvent<RateThisThingFormElement>) {
     console.log('Record');
+  }
+
+  function selectCampaign(campaign: BaseCampaign) {
+    setSelectedCampaign(campaign);
+  }
+
+  function addCampaign(id: string, name: string, externalId: string) {
+    const campaign = { id, name, externalid: externalId };
+    setCampaigns((prev) => [campaign, ...prev]);
+    setCampaignId(id);
+    selectCampaign(campaign);
+  }
+
+  function handleNextClick() {
+    if (!campaignId) return;
+    const item = campaigns.find((x) => x.id === campaignId);
+    if (!item) return;
+    selectCampaign(item);
+  }
+
+  function handleBackClick() {
+    setSelectedCampaign(undefined);
   }
 
   if (isLoading) {
@@ -63,45 +79,78 @@ const RateThisThingCardWhiteLabel = (props: Props) => {
         ></div>
       </div>
       <div className="w-full lg:w-1/2 px-12 py-12 lg:max-w-3xl">
-        <div className="container text-center md:text-left flex flex-col mx-auto">
-          <h2 className="text-3xl font-semibold tracking-tight text-gray-700 sm:text-4xl">Configure Your Campaign</h2>
+        {selectedCampaign ? (
+          <div className="container text-center md:text-left flex flex-col mx-auto">
+            <h2 className="text-3xl font-semibold tracking-tight text-gray-700 sm:text-4xl">Ready to record</h2>
 
-          <form onChange={handleChange} onSubmit={handleSubmit} className="mt-12">
-            <Select
-              id="campaignInput"
-              options={campaigns.map((campaign) => {
-                return {
-                  id: campaign.id,
-                  label: campaign.name,
-                  value: campaign.id,
-                };
-              })}
-              label="Select Campaign"
-              value={campaignId}
-            />
+            <h3 className="mt-8 mb-2 text-xl font-semibold tracking-tight text-gray-700">{selectedCampaign.name}</h3>
 
-            <p className="font-bold text-xl py-5">OR</p>
+            <div className="grid grid-cols-2">
+              <div>ID</div>
+              <div className="font-mono">{selectedCampaign.id}</div>
 
-            <div>
-              <button
-                type="button"
-                className="text-blue-600 dark:text-blue-400 hover:underline"
-                onClick={() => setShowCreateModal(true)}
-              >
-                Create new campaign
-              </button>
+              <div>External ID</div>
+              <div className={!!selectedCampaign.externalid ? 'font-mono' : 'text-gray-300'}>
+                {!!selectedCampaign.externalid ? selectedCampaign.externalid : 'empty'}
+              </div>
             </div>
 
-            <p className="font-bold text-xl py-5">THEN</p>
+            <div className="mt-8 flex justify-between items-center">
+              <Button variant="secondary" onClick={handleBackClick}>
+                Back
+              </Button>
 
-            <div className="inline-flex w-full sm:w-auto">
-              <VouchRecorderButton campaignId={campaignId ?? CAMPAIGN} />
+              <VouchRecorderButton campaignId={selectedCampaign.id ?? CAMPAIGN} />
             </div>
-          </form>
-        </div>
+          </div>
+        ) : (
+          <div className="container text-center md:text-left flex flex-col mx-auto">
+            <h2 className="text-3xl font-semibold tracking-tight text-gray-700 sm:text-4xl">Configure your Campaign</h2>
+
+            <form onSubmit={handleSubmit} className="mt-12">
+              <Select
+                id="campaignInput"
+                options={campaigns.map((campaign) => {
+                  return {
+                    id: campaign.id,
+                    label: campaign.name,
+                    value: campaign.id,
+                  };
+                })}
+                label="Select a Vouch Campaign"
+                value={campaignId}
+                onChange={(event) => {
+                  setCampaignId(event.currentTarget.value);
+                }}
+              />
+
+              <p className="font-bold text-xl py-5">OR</p>
+
+              <div>
+                <button
+                  type="button"
+                  className="text-blue-600 dark:text-blue-400 hover:underline"
+                  onClick={() => setShowCreateModal(true)}
+                >
+                  Create new Vouch Campaign
+                </button>
+              </div>
+
+              <div className="mt-8 flex justify-end">
+                <Button variant="primary" onClick={handleNextClick}>
+                  Next
+                </Button>
+              </div>
+            </form>
+          </div>
+        )}
       </div>
 
-      <WhiteLabelCreateCampaignModal open={showCreateModal} onClose={handleCloseCreateModal} />
+      <WhiteLabelCreateCampaignModal
+        open={showCreateModal}
+        onClose={handleCloseCreateModal}
+        addCampaign={addCampaign}
+      />
     </div>
   );
 };

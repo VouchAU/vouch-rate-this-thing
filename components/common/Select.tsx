@@ -1,4 +1,4 @@
-import React, { HTMLProps, InputHTMLAttributes } from 'react';
+import React, { HTMLProps } from 'react';
 
 interface SelectOption {
   id?: string | number;
@@ -11,7 +11,7 @@ interface Props extends HTMLProps<HTMLSelectElement> {
   options: SelectOption[];
 }
 
-const Select = ({ id, label, value, options, ...rest }: Props) => (
+const Select = ({ id, label, options, ...rest }: Props) => (
   <div className="text-left relative">
     <label className="text-gray-700 dark:text-gray-200" htmlFor={id}>
       {label}
@@ -36,7 +36,11 @@ const Select = ({ id, label, value, options, ...rest }: Props) => (
           transition
           ease-in-out
           m-0
-          focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+          pr-8
+          focus:text-gray-700 
+          focus:bg-white 
+          focus:border-blue-600 
+          focus:outline-none"
       aria-label="Default select example"
       {...rest}
     >
@@ -49,7 +53,7 @@ const Select = ({ id, label, value, options, ...rest }: Props) => (
       })}
     </select>
 
-    <span className="absolute right-4 top-10 pointer-events-none text-gray-400">↓</span>
+    <span className="absolute right-3 top-10 pointer-events-none text-gray-700">↓</span>
   </div>
 );
 
