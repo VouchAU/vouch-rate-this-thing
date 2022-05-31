@@ -8,6 +8,9 @@ type Props = {
   query?: string;
 };
 
+const ENV = process.env.NEXT_PUBLIC_VOUCH_ENV;
+const UI_KIT_TAG = ENV === 'prod' ? 'latest' : ENV === 'staging' ? 'beta' : 'alpha';
+
 const VouchRecorderButton = ({ campaignId, label, type, useRearCamera, query }: Props) => (
   <>
     <Script
@@ -15,7 +18,7 @@ const VouchRecorderButton = ({ campaignId, label, type, useRearCamera, query }: 
       type="module"
       crossOrigin="anonymous"
       referrerPolicy="no-referrer"
-      src="https://cdn.jsdelivr.net/npm/@vouchfor/uikit@beta/embed/vouch-recorder-button.bundle.js"
+      src={`https://cdn.jsdelivr.net/npm/@vouchfor/uikit@${UI_KIT_TAG}/embed/vouch-recorder-button.bundle.js`}
     ></Script>
 
     <div
