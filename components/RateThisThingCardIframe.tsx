@@ -1,5 +1,8 @@
 import React from 'react';
 
+const URL = process.env.NEXT_PUBLIC_VOUCH_APP_URL;
+const CAMPAIGN = process.env.NEXT_PUBLIC_VOUCH_DEFAULT_CAMPAIGN_ID;
+
 const RateThisThingCardIframe = () => {
   return (
     <div className="w-full lg:max-w-7xl lg:mx-8 lg:flex">
@@ -28,11 +31,11 @@ const RateThisThingCardIframe = () => {
               >
                 <iframe
                   className="absolute top-0 left-0 w-full h-full" // iframe styles for responsive content
-                  id="l3sL7l6C4C"
+                  id={CAMPAIGN}
                   title="Rate This Thing"
-                  src="https://dev.vouchfor.com/public/c/l3sL7l6C4C?permissions=prompt&nosupport=true"
+                  src={`${URL}/public/c/${CAMPAIGN}?permissions=prompt&nosupport=true`}
                   sandbox="allow-scripts allow-same-origin allow-forms"
-                  allow="camera https://dev.vouchfor.com; microphone https://dev.vouchfor.com; display-capture https://dev.vouchfor.com; fullscreen"
+                  allow={`camera ${URL}; microphone ${URL}; display-capture ${URL}; fullscreen`}
                   width="414"
                   height="736"
                 ></iframe>

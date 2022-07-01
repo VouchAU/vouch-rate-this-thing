@@ -55,6 +55,10 @@ const Nav = () => {
               <a className={getLinkClasses(router.pathname === '/')}>Redirect</a>
             </Link>
 
+            <Link href="/whitelabel-example">
+              <a className={getLinkClasses(router.pathname === '/whitelabel-example')}>Whitelabel</a>
+            </Link>
+
             <Link href="/iframe-example">
               <a className={getLinkClasses(router.pathname === '/iframe-example')}>iframe</a>
             </Link>

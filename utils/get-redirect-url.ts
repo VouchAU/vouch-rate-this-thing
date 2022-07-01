@@ -1,8 +1,8 @@
 const VOUCH_APP_URL = process.env.NEXT_PUBLIC_VOUCH_APP_URL || '';
-const VOUCH_CAMPAIGN_ID = process.env.NEXT_PUBLIC_VOUCH_CAMPAIGN_ID || '';
+const VOUCH_CAMPAIGN_ID = process.env.NEXT_PUBLIC_VOUCH_DEFAULT_CAMPAIGN_ID || '';
 const CALLBACK_URL = process.env.NEXT_PUBLIC_CALLBACK_URL || '';
 
-const BASE_VOUCH_CAMPAIGN_URL = `${VOUCH_APP_URL}public/c/${VOUCH_CAMPAIGN_ID}`;
+const BASE_VOUCH_CAMPAIGN_URL = `${VOUCH_APP_URL}/public/c/${VOUCH_CAMPAIGN_ID}`;
 
 type Options = {
   name?: string;
