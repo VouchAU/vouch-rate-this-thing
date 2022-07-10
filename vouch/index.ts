@@ -11,7 +11,7 @@ export const getVouch = (id: string): Promise<VouchApiResponse> => {
 };
 
 export const updateVouch = (id: string, payload: UpdateVouchPayload): Promise<VouchApiResponse> => {
-  return vouchClient.vouches.get(id, payload);
+  return vouchClient.vouches.update(id, payload);
 };
 
 export const getCampaign = (id: string): Promise<CampaignApiResponse> => {
