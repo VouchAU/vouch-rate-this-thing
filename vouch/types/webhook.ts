@@ -1,4 +1,4 @@
-import { BaseCampaign, BaseEntity, BaseVouch, Contact, Customer } from "../types";
+import { Account, BaseCampaign, BaseEntity, BaseVouch, Contact, Customer } from ".";
 
 export type WebhookEvent<T> = T & {
   name: string;

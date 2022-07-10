@@ -238,10 +238,10 @@
     "@typescript-eslint/types" "5.12.0"
     eslint-visitor-keys "^3.0.0"
 
-"@vouchfor/sdk@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@vouchfor/sdk/-/sdk-1.1.0.tgz#3227c9bb4654ec73327f846e7eaf21f0ef8f0f73"
-  integrity sha512-RiqFuxLMs9BY3PDXrEXyYcYJsHeeZZEwsKThIBGlQUKhI6VSJwcNj7RXvD2cFYiIuhXyazBK2KQCEYYpeyJ/Jg==
+"@vouchfor/sdk@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@vouchfor/sdk/-/sdk-1.1.1.tgz#c0081f82837a9b0ea04c4bf7d8b741f19abb3fb0"
+  integrity sha512-wqAVsjHTBRRlOSftMHrGwqJ36xt96Wztbu/IbtFCv76bq5XT0db5to/axnF59Pwh7Jj9Dj4zbSpDlIcD+7FOig==
 
 acorn-jsx@^5.3.1:
   version "5.3.2"

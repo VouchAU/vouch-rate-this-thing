@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BaseCampaign } from '../api/vouch/vouch';
+import { BaseCampaign } from '../vouch/types';
 import { VouchRecorderButton } from './common/VouchRecorderButton';
 
 const CAMPAIGN = process.env.NEXT_PUBLIC_VOUCH_DEFAULT_CAMPAIGN_ID ?? '';

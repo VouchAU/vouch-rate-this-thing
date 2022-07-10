@@ -69,6 +69,9 @@ export type RequestSettings = {
     },
     logoSrc?: string;
   }
+  cover?: {
+    vouchid?: string;
+  }
   labels: {
     submission: string;
     title: string;
@@ -96,7 +99,7 @@ export type RequestSettings = {
 type BaseRequest = {
   id: string;
   admin: string;
-  externalid: string;
+  externalid?: string;
   url: string;
 }
 

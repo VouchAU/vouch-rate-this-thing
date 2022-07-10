@@ -1,6 +1,6 @@
 import cuid from 'cuid';
 import { FormEventHandler, useEffect, useState } from 'react';
-import { createCampaign } from '../api/vouch';
+import { createCampaign } from '../vouch'
 import { Button } from './common/Button';
 import { Input } from './common/Input';
 import { Modal } from './common/Modal';
@@ -78,7 +78,7 @@ const WhiteLabelCreateCampaignModal = (props: Props) => {
     };
 
     const res = await createCampaign(data);
-    const { id, name } = res; // doesn't return explicit externalid
+    const { id, name } = res.campaign; // doesn't return explicit externalid
     addCampaign(id, name, externalId);
     onClose();
     resetForm();

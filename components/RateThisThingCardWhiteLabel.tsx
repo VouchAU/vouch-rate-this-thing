@@ -1,5 +1,6 @@
 import React, { FormEvent, useEffect, useState } from 'react';
-import { BaseCampaign, listCampaigns } from '../api/vouch';
+import { listCampaigns } from '../vouch';
+import { BaseCampaign } from '../vouch/types';
 import { Button } from './common/Button';
 import { Input } from './common/Input';
 import { Select } from './common/Select';

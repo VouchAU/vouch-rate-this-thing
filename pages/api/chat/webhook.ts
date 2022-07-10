@@ -1,16 +1,85 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import cuid from 'cuid';
+import { createCampaign, getCampaign, getLatestCampaignResponse, updateVouch } from '../../../vouch';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import type { CampaignWebhookEventBody, VouchWebhookEventBody } from '../../../api/vouch/types';
+import type { Contact, VouchWebhookEventBody } from '../../../vouch/types';
 
 const { VouchWebhookEvent } = require('@vouchfor/sdk');
 
-const campaignEventHandler = async (event: CampaignWebhookEventBody) => {
-  
+const CHAT_PREFIX = 'chat.';
+/*
+* Helper function to encode email to external id
+*/
+const encodeExternalId = (email: string) => {
+  return `${CHAT_PREFIX}${cuid()}.${email}`;
 }
 
+/*
+* Helper function to decode email from external id
+*/
+const decodeExternalId = (id: string) => {
+  const arr = id.split(/\w+\.{2}/g);
+  return arr.pop();
+}
 
-const vouchEventHandler = async (event: VouchWebhookEventBody) => {
+const createChat = async (id: string, contact: Contact) => {
+  console.log(`Creating new chat from campaign ${id}`);
+  const existing = await getCampaign(id);
+  const chat = await createCampaign({
+    account: { email: existing.account.email },
+    campaign: {
+      externalid: encodeExternalId(contact.email),
+      name: `Chat with ${contact.name}`,
+      questions: existing.campaign.questions.map((question) => {
+        return {
+          maxduration: question.maxduration,
+          optional: question.optional,
+          text: question.text,
+          type: question.type,
+        };
+      }),
+      settings: {
+        cover: {
+          vouchid: existing.campaign.settings.cover?.vouchid,
+        }
+      }
+    }
+  });
 
+  return chat;
+}
+
+const handleVouchResponded = async (event: VouchWebhookEventBody) => {
+  const { event: { account, campaign, contact, vouch } } = event;
+  if (!campaign) {
+    return;
+  }
+
+  /*
+  * Internal check to see if campaign is a chat - in production this should be done querying your own data source
+  * We are using the External ID of the campaign to check if a chat has been initiated
+  * CHAT NOT EXISTS SCENARIO: If campaign is not a chat clone campaign and notify admin
+  * CHAT EXISTS SCENARIO: Notify other party that chat response has been received
+  */
+  const isChat = campaign.externalid?.startsWith(CHAT_PREFIX);
+  const contactEmail = 'david@vouchfor.com';
+  const isAdmin = account.email === contact.email;
+  const receiverEmail = isAdmin ? account.email : contactEmail;
+
+  const [ chat, cover ] = await Promise.all([
+    isChat ? getCampaign(campaign.id) : createChat(campaign.id, contact),
+    isChat ? getLatestCampaignResponse(campaign.id, receiverEmail) : Promise.resolve(undefined),
+  ]);
+
+  await updateVouch(vouch.id, {
+    vouch: {
+      settings: {
+        cover: {
+          vouchid: cover ? cover.vouch.id : chat.campaign.settings.cover?.vouchid,
+        }
+      }
+    }
+  });
 }
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -22,28 +91,16 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { event } = req.body;
   console.log(`Handling event ${event.name}`);
 
-  switch (event) {
-    case VouchWebhookEvent.VOUCH_CREATED:
-    case VouchWebhookEvent.VOUCH_SENT:
-    case VouchWebhookEvent.VOUCH_PUBLISHED:
-    case VouchWebhookEvent.VOUCH_OPENED:
-    case VouchWebhookEvent.VOUCH_REMINDED:
-    case VouchWebhookEvent.VOUCH_SUBMITTED:
-    case VouchWebhookEvent.VOUCH_SCHEDULED:
-    case VouchWebhookEvent.VOUCH_RESPONDED:
-      await vouchEventHandler(event as VouchWebhookEventBody);
-      break;
-    case VouchWebhookEvent.CAMPAIGN_CREATED:
-    case VouchWebhookEvent.CAMPAIGN_LIVE:
-    case VouchWebhookEvent.CAMPAIGN_PAUSED:
-    case VouchWebhookEvent.CAMPAIGN_VIEWED:
-    case VouchWebhookEvent.CAMPAIGN_STARTED:
-    case VouchWebhookEvent.CAMPAIGN_RESPONDED:
-    case VouchWebhookEvent.CAMPAIGN_DELETED:
-      await campaignEventHandler(event as CampaignWebhookEventBody);
-      break;
-    default:
-      break; // do nothing
+  try {
+    switch (event.name) {
+      case VouchWebhookEvent.VOUCH_RESPONDED:
+        await handleVouchResponded(req.body as VouchWebhookEventBody);
+        break;
+      default:
+        break; // do nothing
+    }
+  } catch (err) {
+    console.log(`Error handling event ${event.name} - ${err}`);
   }
 
   res.send({});

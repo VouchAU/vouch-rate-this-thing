@@ -70,6 +70,10 @@ const Nav = () => {
             <Link href="/report-example">
               <a className={getLinkClasses(router.pathname === '/report-example')}>Report</a>
             </Link>
+
+            <Link href="/chat-example">
+              <a className={getLinkClasses(router.pathname === '/chat-example')}>Chat</a>
+            </Link>
           </div>
         </div>
       </div>
