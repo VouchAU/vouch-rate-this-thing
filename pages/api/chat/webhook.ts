@@ -51,7 +51,8 @@ const createChat = async (id: string, contact: Contact) => {
 
 const handleVouchResponded = async (event: VouchWebhookEventBody) => {
   const { event: { account, campaign, contact, vouch } } = event;
-  if (!campaign) {
+
+  if (!campaign || vouch.status !== 'RESPONDED') {
     return;
   }
 
@@ -93,6 +94,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   try {
     switch (event.name) {
+      case VouchWebhookEvent.VOUCH_POPULATED:
       case VouchWebhookEvent.VOUCH_RESPONDED:
         await handleVouchResponded(req.body as VouchWebhookEventBody);
         break;

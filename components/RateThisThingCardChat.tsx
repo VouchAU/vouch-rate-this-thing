@@ -1,14 +1,56 @@
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { BaseCampaign } from '../vouch/types';
+import { getCampaign, getLatestCampaignResponse } from '../vouch';
 import { VouchRecorderButton } from './common/VouchRecorderButton';
 
 type Props = {
   campaignId: string;
-  vouchId: string;
+  email?: string;
+  name?: string;
+  participant?: string;
 }
 
 const RateThisThingCardChat = (props: Props) => {
-  const { campaignId, vouchId } = props;
+  const { campaignId, email, name, participant } = props;
+  const [vouchId, setVouchId] = useState<string | undefined>('');
+  const [query, setQuery] = useState<string>('');
+
+  async function init() {
+    if (!campaignId) {
+      return
+    }
+
+    try {
+      const [ res, cover ] = await Promise.all([
+        getCampaign(campaignId),
+        participant ? getLatestCampaignResponse(campaignId, participant) : Promise.resolve(undefined),
+      ]);
+
+      const coverVouchId = cover?.vouch.id || res.campaign.settings.cover?.vouchid;
+      const q = new URLSearchParams({});
+      if (email) {
+        q.append('email', email);
+      }
+
+      if (name) {
+        q.append('name', name);
+      }
+
+      if (coverVouchId) {
+        q.append('cover', coverVouchId);
+      }
+
+      setQuery(q.keys.length ? `?${q.toString()}` : '');
+      setVouchId(coverVouchId);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  useEffect(() => {
+    init();
+  }, [campaignId]);
+
 
   return (
     <div className="w-full text-center lg:max-w-7xl lg:mx-8">
@@ -51,7 +93,10 @@ const RateThisThingCardChat = (props: Props) => {
                   />
                 </div>
                 <div className="mt-8">
-                  <VouchRecorderButton campaignId={campaignId} />
+                  <VouchRecorderButton
+                    campaignId={campaignId}
+                    query={query}
+                  />
                 </div>
               </div>
             ) : null

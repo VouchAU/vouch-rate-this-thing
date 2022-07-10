@@ -8,21 +8,6 @@ import { getCampaign } from '../../vouch';
 
 const CAMPAIGN_ID = process.env.NEXT_PUBLIC_VOUCH_DEFAULT_CHAT_CAMPAIGN_ID || '';
 const ChatExamplePage: NextPage = () => {
-  const [vouchId, setVouchId] = useState<string>('');
-
-  async function init() {
-    try {
-      const res = await getCampaign(CAMPAIGN_ID);
-      setVouchId(res.campaign.settings.cover?.vouchid || '')
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  useEffect(() => {
-    init();
-  }, []);
-
   return (
     <div>
       <Head>
@@ -36,7 +21,6 @@ const ChatExamplePage: NextPage = () => {
       <Main>
         <RateThisThingCardChat
           campaignId={process.env.NEXT_PUBLIC_VOUCH_DEFAULT_CHAT_CAMPAIGN_ID || ''}
-          vouchId={vouchId}
         />
       </Main>
 

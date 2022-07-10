@@ -1,9 +1,9 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { Main } from '../../../components/Main';
-import { Nav } from '../../../components/Nav';
-import { RateThisThingCardChat } from '../../../components/RateThisThingCardChat';
+import { Main } from '../../components/Main';
+import { Nav } from '../../components/Nav';
+import { RateThisThingCardChat } from '../../components/RateThisThingCardChat';
 
 /*
 / chat-example
@@ -12,7 +12,7 @@ import { RateThisThingCardChat } from '../../../components/RateThisThingCardChat
 
 const ChatExampleResponsePage: NextPage = () => {
   const router = useRouter()
-  const { campaignid, vouchid } = router.query
+  const { campaignid, email, name, participant } = router.query
 
   return (
     <div>
@@ -25,7 +25,12 @@ const ChatExampleResponsePage: NextPage = () => {
       <Nav />
 
       <Main>
-        <RateThisThingCardChat campaignId={campaignid as string} vouchId={vouchid as string} />
+        <RateThisThingCardChat
+          campaignId={campaignid as string}
+          email={email as string}
+          name={name as string}
+          participant={participant as string}
+        />
       </Main>
 
     </div>

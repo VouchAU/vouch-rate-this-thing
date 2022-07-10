@@ -34,7 +34,7 @@ export const listCampaigns = async (): Promise<BaseCampaign[]> => {
 
 export const listCampaignVouches = async (id: string): Promise<BaseVouch[]> => {
   const result = await vouchClient.campaigns.vouches(id);
-  return result.campaigns || [];
+  return result.vouches || [];
 };
 
 export const getLatestCampaignResponse = async (id: string, email?: string): Promise<VouchApiResponse | undefined> => {
