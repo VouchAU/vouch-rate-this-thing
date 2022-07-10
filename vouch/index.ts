@@ -1,4 +1,4 @@
-import { BaseCampaign, BaseVouch, Campaign, CampaignApiResponse, CreateCampaignPayload, UpdateCampaignPayload, UpdateVouchPayload, Vouch, VouchApiResponse } from "./types";
+import { BaseCampaign, BaseVouch, CampaignApiResponse, CreateCampaignPayload, UpdateCampaignPayload, UpdateVouchPayload, Vouch, VouchApiResponse } from "./types";
 
 const VouchClient = require('@vouchfor/sdk');
 const vouchClient = new VouchClient({

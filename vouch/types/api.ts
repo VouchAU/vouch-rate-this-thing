@@ -25,6 +25,10 @@ type ColorConfigPayload = {
   text?: string;
 }
 
+type NotePayload = {
+  text: string;
+};
+
 type RequestSettingsPayload = {
   branding?: {
     base?: {
@@ -69,7 +73,7 @@ export type CreateVouchPayload = {
   account?: AccountPayload;
   vouch: {
     externalid?: string;
-    note?: string;
+    note?: NotePayload;
     questions: QuestionPayload[];
     settings?: RequestSettingsPayload;
   };
@@ -79,8 +83,11 @@ export type CreateVouchPayload = {
 
 export type UpdateVouchPayload = {
   account?: AccountPayload;
+  campaign?: {
+    id: string;
+  };
   vouch: {
-    note?: string;
+    note?: NotePayload;
     externalid?: string;
     questions?: QuestionPayload[];
     settings?: RequestSettingsPayload;
@@ -104,7 +111,7 @@ export type CreateCampaignPayload = {
     name: string;
     questions: QuestionPayload[];
     externalid?: string;
-    note?: string;
+    note?: NotePayload;
     settings?: RequestSettingsPayload;
   };
 }
@@ -115,7 +122,7 @@ export type UpdateCampaignPayload = {
     name?: string;
     questions?: QuestionPayload[];
     externalid?: string;
-    note?: string;
+    note?: NotePayload;
     settings?: RequestSettingsPayload;
   };
 }

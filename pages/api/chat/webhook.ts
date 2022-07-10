@@ -18,7 +18,7 @@ const encodeExternalId = (email: string) => {
 * Helper function to decode email from external id
 */
 const decodeExternalId = (id: string) => {
-  const arr = id.split(/\w+\.{2}/g);
+  const arr = id.split(/([^\.]+\.){2}/g);
   return arr.pop();
 }
 
@@ -30,6 +30,7 @@ const createChat = async (id: string, contact: Contact) => {
     campaign: {
       externalid: encodeExternalId(contact.email),
       name: `Chat with ${contact.name}`,
+      note: existing.campaign.note,
       questions: existing.campaign.questions.map((question) => {
         return {
           maxduration: question.maxduration,
@@ -63,9 +64,8 @@ const handleVouchResponded = async (event: VouchWebhookEventBody) => {
   * CHAT EXISTS SCENARIO: Notify other party that chat response has been received
   */
   const isChat = campaign.externalid?.startsWith(CHAT_PREFIX);
-  const contactEmail = 'david@vouchfor.com';
-  const isAdmin = account.email === contact.email;
-  const receiverEmail = isAdmin ? account.email : contactEmail;
+  const contactEmail = campaign.externalid && isChat ? decodeExternalId(campaign.externalid) : contact.email;
+  const receiverEmail = contact.email === contactEmail ? account.email : contact.email;
 
   const [ chat, cover ] = await Promise.all([
     isChat ? getCampaign(campaign.id) : createChat(campaign.id, contact),
@@ -73,6 +73,9 @@ const handleVouchResponded = async (event: VouchWebhookEventBody) => {
   ]);
 
   await updateVouch(vouch.id, {
+    campaign: {
+      id: chat.campaign.id,
+    },
     vouch: {
       settings: {
         cover: {

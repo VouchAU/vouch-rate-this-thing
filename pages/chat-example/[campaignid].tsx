@@ -5,11 +5,6 @@ import { Main } from '../../components/Main';
 import { Nav } from '../../components/Nav';
 import { RateThisThingCardChat } from '../../components/RateThisThingCardChat';
 
-/*
-/ chat-example
-/ chat-example/[chatid]?email=daniel@vouchfor.com&name=DanielShein&party=david@vouchfor.com
-*/
-
 const ChatExampleResponsePage: NextPage = () => {
   const router = useRouter()
   const { campaignid, email, name, participant } = router.query
