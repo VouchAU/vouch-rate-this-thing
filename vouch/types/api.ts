@@ -72,8 +72,9 @@ type RequestSettingsPayload = {
 export type CreateVouchPayload = {
   account?: AccountPayload;
   vouch: {
-    externalid?: string;
     note?: NotePayload;
+    externalid?: string;
+    metadata?: object;
     questions: QuestionPayload[];
     settings?: RequestSettingsPayload;
   };
@@ -89,6 +90,7 @@ export type UpdateVouchPayload = {
   vouch: {
     note?: NotePayload;
     externalid?: string;
+    metadata?: object;
     questions?: QuestionPayload[];
     settings?: RequestSettingsPayload;
   };
@@ -111,6 +113,7 @@ export type CreateCampaignPayload = {
     name: string;
     questions: QuestionPayload[];
     externalid?: string;
+    metadata?: object;
     note?: NotePayload;
     settings?: RequestSettingsPayload;
   };
@@ -122,6 +125,7 @@ export type UpdateCampaignPayload = {
     name?: string;
     questions?: QuestionPayload[];
     externalid?: string;
+    metadata?: object;
     note?: NotePayload;
     settings?: RequestSettingsPayload;
   };

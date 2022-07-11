@@ -2,7 +2,7 @@
 import cuid from 'cuid';
 import { createCampaign, getCampaign, getLatestCampaignResponse, updateVouch } from '../../../vouch';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import type { Contact, VouchWebhookEventBody } from '../../../vouch/types';
+import type { Account, CampaignApiResponse, Contact, VouchWebhookEventBody } from '../../../vouch/types';
 
 const { VouchWebhookEvent } = require('@vouchfor/sdk');
 
@@ -22,15 +22,19 @@ const decodeExternalId = (id: string) => {
   return arr.pop();
 }
 
-const createChat = async (id: string, contact: Contact) => {
+const createChat = async (id: string, account: Account, contact: Contact) => {
   console.log(`Creating new chat from campaign ${id}`);
   const existing = await getCampaign(id);
   const chat = await createCampaign({
     account: { email: existing.account.email },
     campaign: {
       externalid: encodeExternalId(contact.email),
+      metadata: {
+        owner: account,
+        contact,
+      },
       name: `Chat with ${contact.name}`,
-      note: existing.campaign.note,
+      note: existing.campaign.note.text ? existing.campaign.note : undefined,
       questions: existing.campaign.questions.map((question) => {
         return {
           maxduration: question.maxduration,
@@ -68,7 +72,7 @@ const handleVouchResponded = async (event: VouchWebhookEventBody) => {
   const receiverEmail = contact.email === contactEmail ? account.email : contact.email;
 
   const [ chat, cover ] = await Promise.all([
-    isChat ? getCampaign(campaign.id) : createChat(campaign.id, contact),
+    isChat ? getCampaign(campaign.id) : createChat(campaign.id, account, contact),
     isChat ? getLatestCampaignResponse(campaign.id, receiverEmail) : Promise.resolve(undefined),
   ]);
 

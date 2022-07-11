@@ -104,6 +104,9 @@ type BaseRequest = {
 }
 
 type Request = BaseRequest & {
+  metadata?: {
+    [key: string]: any
+  };
   note: {
     text: string;
   },

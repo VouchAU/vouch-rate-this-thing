@@ -1,17 +1,19 @@
-import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { getCampaign, getLatestCampaignResponse } from '../vouch';
 import { VouchRecorderButton } from './common/VouchRecorderButton';
 
+type Party = undefined | {
+  email: string
+  name: string
+}
+
 type Props = {
   campaignId: string;
-  email?: string;
-  name?: string;
-  participant?: string;
+  index?: 1 | 2;
 }
 
 const RateThisThingCardChat = (props: Props) => {
-  const { campaignId, email, name, participant } = props;
+  const { campaignId, index } = props;
   const [vouchId, setVouchId] = useState<string | undefined>('');
   const [query, setQuery] = useState<string>('');
 
@@ -21,19 +23,25 @@ const RateThisThingCardChat = (props: Props) => {
     }
 
     try {
-      const [ res, cover ] = await Promise.all([
-        getCampaign(campaignId),
-        participant ? getLatestCampaignResponse(campaignId, participant) : Promise.resolve(undefined),
-      ]);
+      const res = await getCampaign(campaignId);
+      const owner = res.campaign.metadata?.owner as Party;
+      const contact = res.campaign.metadata?.contact as Party;
+
+      const activeParty = index === 1 ? owner : contact;
+      const inactiveParty = index === 1 ? contact : owner;
+
+      const cover = index && inactiveParty?.email
+        ? await getLatestCampaignResponse(campaignId, inactiveParty.email)
+        : undefined
 
       const coverVouchId = cover?.vouch.id || res.campaign.settings.cover?.vouchid;
       const q = new URLSearchParams({});
-      if (email) {
-        q.append('email', email);
+      if (activeParty) {
+        q.append('email', activeParty.email);
       }
 
-      if (name) {
-        q.append('name', name);
+      if (activeParty) {
+        q.append('name', activeParty.name);
       }
 
       if (coverVouchId) {
@@ -49,16 +57,11 @@ const RateThisThingCardChat = (props: Props) => {
 
   useEffect(() => {
     init();
-  }, [campaignId]);
+  }, [campaignId, index]);
 
 
   return (
-    <div className="w-full text-center lg:max-w-7xl lg:mx-8">
-      <div className="container text-center flex flex-col mx-auto mt-16">
-        <h2 className="px-12 text-3xl font-semibold tracking-tight text-gray-700 sm:text-4xl">
-          Start a chat below
-        </h2>
-      </div>
+    <div>
       <div className="w-full h-96 flex justify-center mt-10">
         <div className="flex h-full max-w-lg flex-1 items-center lg:rounded-lg px-8">
           <div

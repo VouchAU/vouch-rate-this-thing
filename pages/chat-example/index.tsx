@@ -1,10 +1,8 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { useEffect, useState } from 'react';
 import { Main } from '../../components/Main';
 import { Nav } from '../../components/Nav';
 import { RateThisThingCardChat } from '../../components/RateThisThingCardChat';
-import { getCampaign } from '../../vouch';
 
 const CAMPAIGN_ID = process.env.NEXT_PUBLIC_VOUCH_DEFAULT_CHAT_CAMPAIGN_ID || '';
 const ChatExamplePage: NextPage = () => {
@@ -19,9 +17,14 @@ const ChatExamplePage: NextPage = () => {
       <Nav />
 
       <Main>
-        <RateThisThingCardChat
-          campaignId={process.env.NEXT_PUBLIC_VOUCH_DEFAULT_CHAT_CAMPAIGN_ID || ''}
-        />
+        <div className="w-full text-center lg:max-w-7xl lg:mx-8">
+          <div className="container text-center flex flex-col mx-auto mt-16">
+            <h2 className="px-12 text-3xl font-semibold tracking-tight text-gray-700 sm:text-4xl">
+              Start a chat below
+            </h2>
+          </div>
+          <RateThisThingCardChat campaignId={CAMPAIGN_ID} />
+        </div>
       </Main>
 
     </div>
