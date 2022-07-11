@@ -19,7 +19,6 @@ const ChatExampleResponsePage: NextPage = () => {
     }
   }, [index]);
 
-
   return (
     <div>
       <Head>
@@ -31,21 +30,14 @@ const ChatExampleResponsePage: NextPage = () => {
       <Nav />
 
       <Main>
-        <div className="w-full text-center lg:max-w-7xl lg:mx-8">
-          <div className="container text-center flex flex-col mx-auto mt-16">
-            <h2 className="px-12 text-3xl font-semibold tracking-tight text-gray-700 sm:text-4xl">
-              Start a chat below
-            </h2>
-          </div>
-          {
-            campaignid && idx ? (
-              <RateThisThingCardChat
-                campaignId={campaignid as string}
-                index={idx}
-              />
-            ) : null
-          }
-        </div>
+        {
+          campaignid && idx ? (
+            <RateThisThingCardChat
+              campaignId={campaignid as string}
+              index={idx}
+            />
+          ) : null
+        }
       </Main>
     </div>
   );

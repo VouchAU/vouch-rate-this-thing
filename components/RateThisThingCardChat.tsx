@@ -15,8 +15,10 @@ type Props = {
 
 const RateThisThingCardChat = (props: Props) => {
   const { campaignId, index } = props;
-  const [vouchId, setVouchId] = useState<string | undefined>('');
+  const [title, setTitle] = useState<string>('Start Chat');
+  const [recordLabel, setRecordLabel] = useState<string>('Respond');
   const [query, setQuery] = useState<string>('');
+  const [vouchId, setVouchId] = useState<string | undefined>('');
 
   async function init() {
     if (!campaignId) {
@@ -46,7 +48,10 @@ const RateThisThingCardChat = (props: Props) => {
         q.append('cover', coverVouchId);
       }
 
+      const name = inactiveParty?.name || res.account.name;
       setQuery(q.toString() ? `?${q.toString()}` : '');
+      setRecordLabel(`Respond to ${name}`);
+      setTitle(`Chat with ${name}`);
       setVouchId(coverVouchId);
     } catch (e) {
       console.error(e);
@@ -58,42 +63,49 @@ const RateThisThingCardChat = (props: Props) => {
   }, [campaignId, index]);
 
   return (
-    <div>
-      <div className="w-full flex justify-center mt-10 lg:h-[650px]">
-        <div className="flex h-full w-full flex-1 items-center lg:rounded-lg px-8">
+    <div className="container text-center flex flex-col mx-auto">
+      <div className="flex justify-center">
+        <div className="flex flex-1 items-center lg:rounded-lg px-8">
           <div
             className="w-full h-96 bg-cover lg:rounded-lg lg:h-full"
           >
           {
             vouchId ? (
               <div>
-                <script
-                  type="module"
-                  crossOrigin="anonymous"
-                  referrerPolicy="no-referrer"
-                  src="https://cdn.jsdelivr.net/npm/@vouchfor/uikit@beta/embed/vouch-embed-inline-player.bundle.js">
-                </script>
+                <h2 className="px-12 text-3xl font-semibold tracking-tight text-gray-700 sm:text-4xl mb-6">
+                  {title}
+                </h2>
                 <div>
-                  <vouch-embed-inline-player
-                    showname="true"
-                    showlogo="true"
-                    showcaption="true"
-                    showcontrol="true"
-                    autoplay="false"
-                    answeronly="true"
-                    vouchid={vouchId}
-                    apikey={process.env.NEXT_PUBLIC_VOUCH_EMBED_KEY}
-                    responsive="true"
-                    orientation="landscape"
-                    fitcover="true"
-                    style={{
-                      "--vu-embed-inline-player-color": "#FFFFFF",
-                      "--vu-embed-inline-player-bg-color": "#000000",
-                    }}
-                  />
-                </div>
-                <div className="mt-8">
-                  <VouchRecorderButton campaignId={campaignId} query={query} />
+                  <script
+                    type="module"
+                    crossOrigin="anonymous"
+                    referrerPolicy="no-referrer"
+                    src="https://cdn.jsdelivr.net/npm/@vouchfor/uikit@beta/embed/vouch-embed-inline-player.bundle.js">
+                  </script>
+                  <div>
+                    <vouch-embed-inline-player
+                      showname="true"
+                      showlogo="true"
+                      showcontrol="true"
+                      answeronly="true"
+                      vouchid={vouchId}
+                      apikey={process.env.NEXT_PUBLIC_VOUCH_EMBED_KEY}
+                      responsive="true"
+                      orientation="landscape"
+                      fitcover="true"
+                      style={{
+                        "--vu-embed-inline-player-color": "#FFFFFF",
+                        "--vu-embed-inline-player-bg-color": "#000000",
+                      }}
+                    />
+                  </div>
+                  <div className="py-8">
+                    <VouchRecorderButton
+                      campaignId={campaignId}
+                      label={recordLabel}
+                      query={query}
+                    />
+                  </div>
                 </div>
               </div>
             ) : <Spinner />

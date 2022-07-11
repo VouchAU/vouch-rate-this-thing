@@ -10,39 +10,48 @@ enum ChatEvent {
   CREATED,
   RESPONDED
 }
-const sendSlackMessage = (text: string) => {
-  return axios.post('https://slack.com/api/chat.postMessage', {
-    channel: process.env.NEXT_PUBLIC_SLACK_CHANNEL,
-    text,
+
+const sendEmail = (recipient: string, subject: string, template: string) => {
+  return axios.post('https://apps-staging.vouchfor.com/v1/integrations/0ddf9ace-1d86-4728-88ca-1529a3f44e92/email', {
+    recipient,
+    subject,
+    template,
+    variables: {},
   }, {
     headers: {
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_SLACK_TOKEN}`,
+      'x-api-key': '0ddf9ace-1d86-4728-88ca-1529a3f44e92-EG1wQNR1bVfpzXKNF1ZNkz5sWSryNX124KHNWwHPyyC2mkoS0p',
       'content-type': 'application/json',
     }
-  })
+  });
 }
 
 /*
 * Notification Function to handle chat event
 */
 const notify = async (event: ChatEvent, chat: CampaignApiResponse, contact: Contact) => {
-  let text ='';
   const baseUrl = `${process.env.NEXT_PUBLIC_CHAT_BASE_URL}/${chat.campaign.id}`;
-  switch (event) {
-    case ChatEvent.CREATED:
-      text = `Chat initiated by *${contact.name} (${contact.email})*\n\n`
-        + `<${baseUrl}/1|*Owner Link*>\n`
-        + `<${baseUrl}/2|*Contact Link*>`
-      break;
-    case ChatEvent.RESPONDED:
-      text = `*${contact.name} (${contact.email})* has responded to chat.`
-      break;
-    default:
-      break;
-  }
-
-  if (text) {
-    return sendSlackMessage(text);
+  if (event === ChatEvent.CREATED) {
+    await Promise.all([
+      sendEmail(
+        chat.account.email,
+        `A chat has started between you and ${contact.name}`,
+        `<div>${contact.name} has responded to your chat, respond to them <a href=${baseUrl}/1> here</a>. </div>`,
+      ),
+      sendEmail(
+        contact.email,
+        `A chat has started between you and ${chat.account.email}`,
+        `<div>${chat.account.name} will get back to you soon, you can send another response to ${chat.account.name} <a href=${baseUrl}/2> here</a>. </div>`,
+      ),
+    ]);
+  } else if (event === ChatEvent.RESPONDED) {
+    const isAdmin = chat.campaign.metadata?.owner.email === contact.email;
+    const index = isAdmin ? 2 : 1;
+    const email = isAdmin ? chat.campaign.metadata?.contact.email : chat.campaign.metadata?.owner.email;
+    await sendEmail(
+      email,
+      `${contact.name} has sent you a video`,
+      `<div>${contact.name} has sent you a video, you can response to them <a href=${baseUrl}/${index}> here</a>. </div>`,
+    );
   }
 }
 
@@ -86,6 +95,14 @@ const createChat = async (id: string, account: Account, contact: Contact) => {
       settings: {
         cover: {
           vouchid: existing.campaign.settings.cover?.vouchid,
+        },
+        options: {
+          sendReceiveEmail: false,
+          sendResponseEmail: false,
+          showEstimatedTime: false,
+          showCustomerFields: false,
+          showCoverScreen: false,
+          showQuestionList: false,
         }
       }
     }
@@ -98,7 +115,7 @@ const createChat = async (id: string, account: Account, contact: Contact) => {
 const handleVouchResponded = async (event: VouchWebhookEventBody) => {
   const { event: { account, campaign, contact, vouch } } = event;
 
-  if (!campaign || vouch.status !== 'RESPONDED') {
+  if (!campaign || vouch.status !== 'RESPONDED' || !contact.email) {
     return;
   }
 
@@ -145,7 +162,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   try {
     switch (event.name) {
-      case VouchWebhookEvent.VOUCH_POPULATED:
+      case VouchWebhookEvent.VOUCH_UPDATED:
       case VouchWebhookEvent.VOUCH_RESPONDED:
         await handleVouchResponded(req.body as VouchWebhookEventBody);
         break;
