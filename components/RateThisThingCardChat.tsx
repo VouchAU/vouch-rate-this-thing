@@ -82,23 +82,27 @@ const RateThisThingCardChat = (props: Props) => {
                     referrerPolicy="no-referrer"
                     src="https://cdn.jsdelivr.net/npm/@vouchfor/uikit@beta/embed/vouch-embed-inline-player.bundle.js">
                   </script>
-                  <div>
-                    <vouch-embed-inline-player
-                      showname="true"
-                      showlogo="true"
-                      showcontrol="true"
-                      answeronly="true"
-                      vouchid={vouchId}
-                      apikey={process.env.NEXT_PUBLIC_VOUCH_EMBED_KEY}
-                      responsive="true"
-                      orientation="landscape"
-                      fitcover="true"
-                      style={{
-                        "--vu-embed-inline-player-color": "#FFFFFF",
-                        "--vu-embed-inline-player-bg-color": "#000000",
-                      }}
-                    />
-                  </div>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: `<div>
+                      <vouch-embed-inline-player
+                        showname="true"
+                        showlogo="true"
+                        showcontrol="true"
+                        answeronly="true"
+                        vouchid="${vouchId}"
+                        apikey="${process.env.NEXT_PUBLIC_VOUCH_EMBED_KEY}"
+                        responsive="true"
+                        orientation="landscape"
+                        fitcover="true"
+                        style={{
+                          "--vu-embed-inline-player-color": "#FFFFFF",
+                          "--vu-embed-inline-player-bg-color": "#000000",
+                        }}
+                      />
+                    </div>`,
+                    }}
+                  />
                   <div className="py-8">
                     <VouchRecorderButton
                       campaignId={campaignId}
