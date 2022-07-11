@@ -1,10 +1,52 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import axios from 'axios';
 import cuid from 'cuid';
 import { createCampaign, getCampaign, getLatestCampaignResponse, updateVouch } from '../../../vouch';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { Account, CampaignApiResponse, Contact, VouchWebhookEventBody } from '../../../vouch/types';
 
 const { VouchWebhookEvent } = require('@vouchfor/sdk');
+enum ChatEvent {
+  CREATED,
+  RESPONDED
+}
+
+const url = 'https://c971-2001-8003-230a-5a00-d83d-e229-d715-4da0.ngrok.io'
+
+const sendSlackMessage = (text: string) => {
+  return axios.post('https://slack.com/api/chat.postMessage', {
+    channel: 'vouchdev',
+    text,
+  }, {
+    headers: {
+      Authorization: `Bearer xoxb-1115124596868-2663203443362-a7gxuuOLkAHDndBFfKxiYdYA`,
+      'content-type': 'application/json',
+    }
+  })
+}
+
+/*
+* Notification Function to handle chat event
+*/
+const notify = async (event: ChatEvent, chat: CampaignApiResponse, contact: Contact) => {
+  let text ='';
+  switch (event) {
+    case ChatEvent.CREATED:
+      text = `Chat initiated by *${contact.name} (${contact.email})*\n\n`
+        + `*Owner Link:* ${url}/chat-example/${chat.campaign.id}/1\n`
+        + `*Contact Link:* ${url}/chat-example/${chat.campaign.id}/2`
+      break;
+    case ChatEvent.RESPONDED:
+      text = `*${contact.name} (${contact.email})* has responded to chat.`
+      break;
+    default:
+      break;
+  }
+
+  if (text) {
+    return sendSlackMessage(text);
+  }
+}
 
 const CHAT_PREFIX = 'chat.';
 /*
@@ -51,6 +93,7 @@ const createChat = async (id: string, account: Account, contact: Contact) => {
     }
   });
 
+  await notify(ChatEvent.CREATED, chat, contact);
   return chat;
 }
 
@@ -76,18 +119,21 @@ const handleVouchResponded = async (event: VouchWebhookEventBody) => {
     isChat ? getLatestCampaignResponse(campaign.id, receiverEmail) : Promise.resolve(undefined),
   ]);
 
-  await updateVouch(vouch.id, {
-    campaign: {
-      id: chat.campaign.id,
-    },
-    vouch: {
-      settings: {
-        cover: {
-          vouchid: cover ? cover.vouch.id : chat.campaign.settings.cover?.vouchid,
+  await Promise.all([
+    isChat ? notify(ChatEvent.RESPONDED, chat, contact) : Promise.resolve(undefined),
+    updateVouch(vouch.id, {
+      campaign: {
+        id: chat.campaign.id,
+      },
+      vouch: {
+        settings: {
+          cover: {
+            vouchid: cover ? cover.vouch.id : chat.campaign.settings.cover?.vouchid,
+          }
         }
       }
-    }
-  });
+    })
+  ]);
 }
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {

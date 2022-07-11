@@ -40,9 +40,14 @@ export const listCampaignVouches = async (id: string): Promise<BaseVouch[]> => {
 export const getLatestCampaignResponse = async (id: string, email?: string): Promise<VouchApiResponse | undefined> => {
   const baseVouches = await listCampaignVouches(id);
   const populated = await Promise.all(
-    baseVouches.map((vouch) => {
-      return getVouch(vouch.id);
-    })
+    baseVouches
+      .filter(
+        (vouch) => {
+          return vouch.status === 'RESPONDED';
+        })
+      .map((vouch) => {
+        return getVouch(vouch.id);
+      })
   );
 
   if (email) {

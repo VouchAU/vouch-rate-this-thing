@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getCampaign, getLatestCampaignResponse } from '../vouch';
+import { Spinner } from './common/Spinner';
 import { VouchRecorderButton } from './common/VouchRecorderButton';
 
 type Party = undefined | {
@@ -35,12 +36,9 @@ const RateThisThingCardChat = (props: Props) => {
         : undefined
 
       const coverVouchId = cover?.vouch.id || res.campaign.settings.cover?.vouchid;
-      const q = new URLSearchParams({});
+      const q = new URLSearchParams();
       if (activeParty) {
         q.append('email', activeParty.email);
-      }
-
-      if (activeParty) {
         q.append('name', activeParty.name);
       }
 
@@ -48,7 +46,7 @@ const RateThisThingCardChat = (props: Props) => {
         q.append('cover', coverVouchId);
       }
 
-      setQuery(q.keys.length ? `?${q.toString()}` : '');
+      setQuery(q.toString() ? `?${q.toString()}` : '');
       setVouchId(coverVouchId);
     } catch (e) {
       console.error(e);
@@ -58,7 +56,6 @@ const RateThisThingCardChat = (props: Props) => {
   useEffect(() => {
     init();
   }, [campaignId, index]);
-
 
   return (
     <div>
@@ -82,12 +79,11 @@ const RateThisThingCardChat = (props: Props) => {
                     showlogo="true"
                     showcaption="true"
                     showcontrol="true"
-                    autoplay="true"
+                    autoplay="false"
                     answeronly="true"
                     vouchid={vouchId}
                     apikey={process.env.NEXT_PUBLIC_VOUCH_EMBED_KEY}
                     responsive="true"
-                    orientation="portrait"
                     fitcover="true"
                     style={{
                       "--vu-embed-inline-player-color": "#FFFFFF",
@@ -96,13 +92,10 @@ const RateThisThingCardChat = (props: Props) => {
                   />
                 </div>
                 <div className="mt-8">
-                  <VouchRecorderButton
-                    campaignId={campaignId}
-                    query={query}
-                  />
+                  <VouchRecorderButton campaignId={campaignId} query={query} />
                 </div>
               </div>
-            ) : null
+            ) : <Spinner />
           }
           </div>
         </div>
