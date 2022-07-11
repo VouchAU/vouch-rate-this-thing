@@ -10,16 +10,13 @@ enum ChatEvent {
   CREATED,
   RESPONDED
 }
-
-const url = 'https://c971-2001-8003-230a-5a00-d83d-e229-d715-4da0.ngrok.io'
-
 const sendSlackMessage = (text: string) => {
   return axios.post('https://slack.com/api/chat.postMessage', {
-    channel: 'vouchdev',
+    channel: process.env.NEXT_PUBLIC_SLACK_CHANNEL,
     text,
   }, {
     headers: {
-      Authorization: `Bearer xoxb-1115124596868-2663203443362-a7gxuuOLkAHDndBFfKxiYdYA`,
+      Authorization: `Bearer ${process.env.NEXT_PUBLIC_SLACK_TOKEN}`,
       'content-type': 'application/json',
     }
   })
@@ -30,11 +27,12 @@ const sendSlackMessage = (text: string) => {
 */
 const notify = async (event: ChatEvent, chat: CampaignApiResponse, contact: Contact) => {
   let text ='';
+  const baseUrl = `${process.env.NEXT_PUBLIC_CHAT_BASE_URL}/${chat.campaign.id}`;
   switch (event) {
     case ChatEvent.CREATED:
       text = `Chat initiated by *${contact.name} (${contact.email})*\n\n`
-        + `*Owner Link:* ${url}/chat-example/${chat.campaign.id}/1\n`
-        + `*Contact Link:* ${url}/chat-example/${chat.campaign.id}/2`
+        + `<${baseUrl}/1|*Owner Link*>\n`
+        + `<${baseUrl}/2|*Contact Link*>`
       break;
     case ChatEvent.RESPONDED:
       text = `*${contact.name} (${contact.email})* has responded to chat.`

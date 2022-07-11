@@ -59,10 +59,10 @@ const RateThisThingCardChat = (props: Props) => {
 
   return (
     <div>
-      <div className="w-full h-96 flex justify-center mt-10">
-        <div className="flex h-full max-w-lg flex-1 items-center lg:rounded-lg px-8">
+      <div className="w-full flex justify-center mt-10 lg:h-[650px]">
+        <div className="flex h-full w-full flex-1 items-center lg:rounded-lg px-8">
           <div
-            className="w-full h-96 bg-cover lg:rounded-lg lg:h-full lg:max-h-[480px]"
+            className="w-full h-96 bg-cover lg:rounded-lg lg:h-full"
           >
           {
             vouchId ? (
@@ -84,6 +84,7 @@ const RateThisThingCardChat = (props: Props) => {
                     vouchid={vouchId}
                     apikey={process.env.NEXT_PUBLIC_VOUCH_EMBED_KEY}
                     responsive="true"
+                    orientation="landscape"
                     fitcover="true"
                     style={{
                       "--vu-embed-inline-player-color": "#FFFFFF",
