@@ -12,14 +12,17 @@ enum ChatEvent {
 }
 
 const sendEmail = (recipient: string, subject: string, template: string) => {
-  return axios.post('https://apps-staging.vouchfor.com/v1/integrations/0ddf9ace-1d86-4728-88ca-1529a3f44e92/email', {
+  /*
+  * Temporary send email method
+  */
+  return axios.post(`https://apps-staging.vouchfor.com/v1/integrations/${process.env.NEXT_PUBLIC_VOUCH_INTEGRATION_ID}/email`, {
     recipient,
     subject,
     template,
     variables: {},
   }, {
     headers: {
-      'x-api-key': '0ddf9ace-1d86-4728-88ca-1529a3f44e92-EG1wQNR1bVfpzXKNF1ZNkz5sWSryNX124KHNWwHPyyC2mkoS0p',
+      'x-api-key': `${process.env.NEXT_PUBLIC_VOUCH_INTEGRATION_ID}-${process.env.NEXT_PUBLIC_VOUCH_INTEGRATION_KEY}`,
       'content-type': 'application/json',
     }
   });
