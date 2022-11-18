@@ -24,7 +24,7 @@ const RateThisThingCardIframe = () => {
           <p className="px-12 mt-4 text-gray-800">Use the recorder below to send us a video response.</p>
 
           <div className="flex px-0 lg:px-12 pt-8">
-            <div className="w-full lg:max-w-sm bg-gray-900 rounded-lg pt-12 p-4 lg:pt-4">
+            <div className="w-full lg:max-w-sm bg-gray-200 rounded-lg pt-12 p-4 lg:pt-4">
               {/* We use this pattern to make the iframe responsive to width, maintaining a 10:16 aspect ratio */}
               <div
                 className="relative pb-[160%] pt-1 h-0" // Wrapper div for responsiveness
@@ -33,7 +33,9 @@ const RateThisThingCardIframe = () => {
                   className="absolute top-0 left-0 w-full h-full" // iframe styles for responsive content
                   id={CAMPAIGN}
                   title="Rate This Thing"
-                  src={`${URL}/public/c/${CAMPAIGN}?permissions=prompt&nosupport=true`}
+                  src={`${URL}/public/c/${CAMPAIGN}?permissions=prompt&nosupport=true&embed=inline`}
+                  // src="https://app.vouchfor.com/c/XUOs2DLaQO?permissions=prompt&nosupport=true&embed=inline"
+
                   sandbox="allow-scripts allow-same-origin allow-forms"
                   allow={`camera ${URL}; microphone ${URL}; display-capture ${URL}; fullscreen`}
                   width="414"
