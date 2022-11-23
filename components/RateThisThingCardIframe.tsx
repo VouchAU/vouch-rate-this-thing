@@ -29,7 +29,7 @@ const RateThisThingCardIframe = () => {
               <div
                 className="relative pb-[160%] pt-1 h-0" // Wrapper div for responsiveness
               >
-                {/* <iframe
+                <iframe
                   className="absolute top-0 left-0 w-full h-full" // iframe styles for responsive content
                   id={CAMPAIGN}
                   title="Rate This Thing"
@@ -40,17 +40,6 @@ const RateThisThingCardIframe = () => {
                   allow={`camera ${URL}; microphone ${URL}; display-capture ${URL}; fullscreen`}
                   width="414"
                   height="736"
-                ></iframe> */}
-
-                <iframe
-                  id="2gC2jZbVqr"
-                  title="Your First Vouch Campaign"
-                  src="https://pro.vouch.video/c/2gC2jZbVqr?permissions=prompt&nosupport=true&embed=inline"
-                  sandbox="allow-scripts allow-same-origin allow-forms"
-                  allow="camera https://pro.vouch.video; microphone https://pro.vouch.video; display-capture https://pro.vouch.video; fullscreen"
-                  width="100%"
-                  height="600"
-                  className="absolute top-0 left-0 w-full h-full" // iframe styles for responsive content
                 ></iframe>
               </div>
             </div>
